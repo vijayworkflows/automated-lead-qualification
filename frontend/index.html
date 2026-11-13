@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcmeFlow | Request a Demo</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 35px 15px;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 35px;
+      border-radius: 12px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.07);
+    }
+
+    h1 {
+      margin-bottom: 8px;
+      color: #1d4ed8;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 16px 0 7px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid #93c5fd;
+      border-color: #2563eb;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #message {
+      margin-top: 18px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>AcmeFlow</h1>
+    <p class="subtitle">
+      Simplify your business workflows.
+      Request a personalized product demo.
+    </p>
+
+    <form id="leadForm">
+
+      <label for="fullName">Full Name *</label>
+      <input type="text" id="fullName" name="fullName"
+             required maxlength="100">
+
+      <label for="email">Business Email *</label>
+      <input type="email" id="email" name="email"
+             required maxlength="254">
+
+      <label for="company">Company Name *</label>
+      <input type="text" id="company" name="company"
+             required maxlength="150">
+
+      <label for="jobTitle">Job Title *</label>
+      <input type="text" id="jobTitle" name="jobTitle"
+             required maxlength="100">
+
+      <label for="website">Company Website</label>
+      <input type="url" id="website" name="website"
+             placeholder="https://example.com">
+
+      <label for="employees">Employee Count *</label>
+      <select id="employees" name="employees" required>
+        <option value="">Select company size</option>
+        <option>1-10</option>
+        <option>11-50</option>
+        <option>51-200</option>
+        <option>201-500</option>
+        <option>501-1000</option>
+        <option>1000+</option>
+      </select>
+
+      <label for="industry">Industry *</label>
+      <select id="industry" name="industry" required>
+        <option value="">Select industry</option>
+        <option>SaaS / Technology</option>
+        <option>Financial Services</option>
+        <option>Manufacturing</option>
+        <option>Healthcare</option>
+        <option>Retail</option>
+        <option>Other</option>
+      </select>
+
+      <label for="country">Country *</label>
+      <input type="text" id="country" name="country"
+             required maxlength="100">
+
+      <label for="product">Interested Product *</label>
+      <select id="product" name="product" required>
+        <option value="">Select a product</option>
+        <option>Workflow Automation</option>
+        <option>Marketing Automation</option>
+        <option>Sales Automation</option>
+        <option>Data Integration</option>
+      </select>
+
+      <button type="submit" id="submitBtn">
+        Request a Demo
+      </button>
+
+      <p id="message" role="status"></p>
+
+    </form>
+  </div>
+
+  <script>
+    // We will replace this with our n8n webhook URL.
+    const WEBHOOK_URL = "http://localhost:5678/webhook-test/acmeflow-lead-capture";
+
+    const form = document.getElementById("leadForm");
+    const message = document.getElementById("message");
+    const submitBtn = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+
+      const formData = new FormData(form);
+
+      const lead = Object.fromEntries(formData.entries());
+
+      lead.source = "AcmeFlow Website";
+      lead.submittedAt = new Date().toISOString();
+
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(lead)
+        });
+
+        if (!response.ok) {
+          throw new Error("Submission failed");
+        }
+
+        message.textContent =
+          "Thank you! Your demo request was submitted.";
+
+        message.style.color = "green";
+        form.reset();
+
+      } catch (error) {
+        message.textContent =
+          "Something went wrong. Please try again.";
+
+        message.style.color = "red";
+        console.error(error);
+
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Request a Demo";
+      }
+    });
+  </script>
+
+</body>
+</html>
