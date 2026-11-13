@@ -5,6 +5,9 @@ AcmeFlow is a fictional B2B SaaS company. This project automates its inbound dem
 
 When a prospect submits a demo request, the workflow validates the submitted information, calculates a lead score, determines qualification status, and routes the lead for Sales follow-up or Marketing nurture.
 
+<img width="959" height="412" alt="acmeflow-lead-capture-workflow" src="https://github.com/user-attachments/assets/5e79c37b-acde-418c-bece-dac528e5d6f0" />
+
+
 ## Technology Stack
 - **Frontend:** HTML, CSS, JavaScript
 - **Automation:** n8n
